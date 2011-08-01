@@ -1,0 +1,10 @@
+This is the draft code for managing NYPL media tracking. Right now it's barely importing data from the iTunes reports.
+
+Phase 1 - import iTunes data
+Phase 1.5 - export cumulative iTunes data
+
+Phase 2 - Import Google Analytics data
+Phase 2.5 - Merge and compare iTunes and Google Analytics
+
+Phase n - exports all data as pretty pretty webpages
+

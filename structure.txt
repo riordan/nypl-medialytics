@@ -1,0 +1,66 @@
+Medialets:
+
+Importer:
+	iTunesU:
+		Trajectory: 
+			Work for 1 sheet -> Work for each sheet -> work for 1 workbook -> work for multiple workbooks in 1 folder -> work for different cases of books
+		
+		Overall variables:
+			Tracks: Dictionary {handle:track}
+			Subscriptions
+		
+		Track:
+			Discreet "Tracks"
+			
+			Track:
+				Variables:
+					Name (event/material)
+					Collection (NYPL -> Live etc.)
+					Count: [(Date, Downloads)]
+					Handle (iTunes ID)
+					
+				Public Methods:
+					Total Downloads
+					dateDL (downloads for certaindate)
+					FirstDate
+					LastDate
+					hasDate
+					
+					addDate(date,downloads)
+			
+			Subscription:
+				Variables:
+					subs: [(Date, subscriptions),...]
+				
+				Public Methods:
+					Total Subscriptions
+				
+			
+			
+				
+		
+
+Series to track:
+	LIVE
+	Cullman
+	Periodically Speaking
+	kidsLIVE
+	teenLIVE
+	Treasures
+	Jazz oral history
+	"performing arts" (find way to break out LPA from others)
+	SIBL ("small biz (itunes & other)" versus other things (other platforms))
+	Art & architecture (mostly arezoo / kind of a catchall)
+	24 hours
+	Mapleson (series)
+	News (catchall)
+	NYPLTV (catchall)
+	Design by the book
+	Teens (catchall - designnypl)
+	Kids (also catchall - storytime, etc.)
+	Children & parents
+	Teachers & students
+	Exhibitions
+	Schomburg
+	
+	
