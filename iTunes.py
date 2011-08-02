@@ -132,9 +132,9 @@ def importReport(dirName, trackList):
 
 
 
-testfile = 'all/'
+targetDirectory = 'sampleFiles/'
 trackList = TrackList()
-importReport(testfile,trackList)
+importReport(targetDirectory,trackList)
 
 '''
 testString = "2011-07-18"
