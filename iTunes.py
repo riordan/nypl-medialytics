@@ -76,8 +76,13 @@ class TrackList:
 		self.allTracks[handle].addDlDate(date,dlCount)
 		if not date in self.allDates:
 			self.allDates.append(date)
+			
+	def addPvCount(self, handle, date, pvCount):
+		self.allTracks[handle].addPvDate(date,pvCount)
+		if not date in self.allDates:
+			self.allDates.append(date)
 	
-	
+		
 	def trackExists(self,handle):
 		return handle in self.allTracks.keys()
 	
@@ -110,41 +115,64 @@ def importReport(dirName, trackList):
 		print "in workbook: %s" %fileName
 		'''Opens all Track worksheets in a workbook'''
 		trackSheets = []
+		summarySheets = []
+		previewSheets = []
 		for sheet in wb.sheet_names():
 			if "Tracks" in sheet:
 				trackSheets.append(sheet)
+			elif "Previews" in sheet:
+				previewSheets.append(sheet)
+			elif "Summary" in sheet:
+				summarySheets.append(sheet)
 		
-		for shName in trackSheets:
-			
-			#opens Track Sheet
-			sh = wb.sheet_by_name(shName)
-			print "In Sheet: %s" %sh.name
-			rows = []
-			#Determines date of data based on name of sheet
-			date = dateutil.parser.parse(sh.name[:sh.name.find(' ')])
-			#print date
-			
-			#importer
-			'''Sheet Parser: Tracks
-			Track excel worksheets contain the date in their sheet name and a schema of
-			|PATH|dlCount|HANDLE
-			PATH is the path to the asset (including the actual track name, denoted by
-			the final carrot ">".)
-			dlCount is the number of downloads this week.
-			HANDLE is the unique ID of each track.'''
-			for rownum in range(1,sh.nrows):
-				cRow = sh.row_values(rownum)
-				path = sh.row_values(rownum)[0]
-				dlCount = sh.row_values(rownum)[1]
-				handle = sh.row_values(rownum)[2]
+		#creates sheetSets variable to iterate over. Used to maintain same code for importing downloads and previews
+		sheetSets = [trackSheets, previewSheets]
+		
+		for cSheet in sheetSets:
+			for shName in cSheet:
+				cSheetType = None
 				
-				#If this track doesn't exist yet, it creates a new instance
-				if not trackList.trackExists(handle):
-					#print "Creating New Track"
-					trackList.newTrack(handle, path)
-				# Updates the count of downloads for that date
-				#print "Adding Download Record"
-				trackList.addDlCount(handle, date, dlCount)
+				if "Tracks" in shName:
+					cSheetType = "Tracks"
+				elif "Previews" in shName:
+					cSheetType = "Previews"
+				
+				
+				#opens current Sheet
+				sh = wb.sheet_by_name(shName)
+				print "In Sheet: %s" %sh.name
+				#Determines date of data based on name of sheet
+				date = dateutil.parser.parse(sh.name[:sh.name.find(' ')])
+				#print date
+			
+				#importer
+				'''Sheet Parser: Tracks
+				Track excel worksheets contain the date in their sheet name and a schema of
+				|PATH|dlCount|HANDLE
+				PATH is the path to the asset (including the actual track name, denoted by
+				the final carrot ">".)
+				dlCount is the number of downloads this week.
+				HANDLE is the unique ID of each track.'''
+				for rownum in range(1,sh.nrows):
+					cRow = sh.row_values(rownum)
+					path = sh.row_values(rownum)[0]
+					count = sh.row_values(rownum)[1]
+					handle = sh.row_values(rownum)[2]
+				
+					#If this track doesn't exist yet, it creates a new instance
+					if not trackList.trackExists(handle):
+						#print "Creating New Track"
+						trackList.newTrack(handle, path)
+					
+					#Determines if it's a Sheet or Preview and adds Count accordingly
+					if cSheetType == "Tracks":
+						# Updates the count of downloads for that date
+						trackList.addDlCount(handle, date, count)
+					elif cSheetType == "Previews":
+						trackList.addPvCount(handle, date, count)
+					else:
+						print "Invalid sheet type!!!"
+						exit()
 	return
 
 
