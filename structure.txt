@@ -35,8 +35,19 @@ Importer:
 				Public Methods:
 					Total Subscriptions
 				
+
+Output:
+	CSV
+		Output one sheet:
+			|		| TOTAL	| WK1	| WK2	| ...
+			|Name, Path, Handle, first appearance |
+		Leave "no data" cells blank
+			ideally: leave "no data" cells blank until first appearance, then zero it out for all future "no record"s
+		All NAME and PATH fields must be enclosed with ""
 			
-			
+
+TODO:
+Out			
 				
 		
 
