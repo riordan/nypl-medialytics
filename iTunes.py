@@ -181,6 +181,9 @@ def importReport(dirName, trackList):
 targetDirectory = 'sampleFiles/'
 trackList = TrackList()
 importReport(targetDirectory,trackList)
+for trackKey in trackList.allTracks.keys():
+	#So printing out tracks here has made me realize that there's at UTF/ASCII error in the names of the programs. Try to find a fix.
+	print trackList.allTracks[trackKey]
 
 '''
 testString = "2011-07-18"
