@@ -59,15 +59,24 @@ class TrackList:
 	
 	def hasDate(self, date):
 		#Checks to see if date is not a datetime. If not, tries to convert from string. If datetime, then checks if it has one
-		if !isinstance(date, datetime):
-			
+		if not isinstance(date, datetime.datetime):
+		  try:
+		    date = dateutil.parser.parse(date)
+		  except:
+		    print "Invalid date format passed to TrackList.hasDate"
+		    sys.exit()
+		
+		#Traverses tracks & dates to see if date is in system
+		for tkey in self.allTracks.keys():
+		  for dkey in range(len(self.allTracks[tkey].count.keys())):
+		    if date == self.allTracks[tkey].count.keys()[dkey]: return True
+		  
+		return False
 
 
 
 # Imports tracks. Takes filename of import file, returns list of rows in sheet
 # Caveat: works only for workbook of 1 sheet with just tracks
-
-
 def importReport(fileName, trackList):
 	#opens excel workbook
 	wb = xlrd.open_workbook(fileName)	
@@ -100,3 +109,11 @@ def importReport(fileName, trackList):
 testfile = 'testSet.xls'
 trackList = TrackList()
 importReport(testfile,trackList)
+
+testString = "2011-07-18"
+testDate = dateutil.parser.parse(testString)
+print testString
+print testDate
+
+print trackList.hasDate(testDate)
+

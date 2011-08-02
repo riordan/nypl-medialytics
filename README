@@ -1,5 +1,10 @@
 This is the draft code for managing NYPL media tracking. Right now it's barely importing data from the iTunes reports.
 
+Required Modules (not base install)
+xlrd
+
+ROADMAP
+
 Phase 1 - import iTunes data
 Phase 1.5 - export cumulative iTunes data
 
