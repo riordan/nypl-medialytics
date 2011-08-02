@@ -1,6 +1,8 @@
 import xlrd
 import sys
 import io
+import os
+import glob
 import pickle
 import dateutil.parser
 import datetime
@@ -77,28 +79,52 @@ class TrackList:
 
 # Imports tracks. Takes filename of import file, returns list of rows in sheet
 # Caveat: works only for workbook of 1 sheet with just tracks
-def importReport(fileName, trackList):
-	#opens excel workbook
-	wb = xlrd.open_workbook(fileName)	
-	#opens first sheet of workbook
-	sh = wb.sheet_by_index(0)
-	rows = []
-	#Determines date of data based on name of sheet
-	date = dateutil.parser.parse(sh.name[:sh.name.find(' ')]) 
-	#print date
-	#importer
-	for rownum in range(1,sh.nrows):
-		cRow = sh.row_values(rownum)
-		path = sh.row_values(rownum)[0]
-		count = sh.row_values(rownum)[1]
-		handle = sh.row_values(rownum)[2]
+def importReport(dirName, trackList):
+	
+	#Traverses directory looking for iTunes excel files
+	
+	dlist = os.listdir(dirName)
+	for fileName in glob.glob( os.path.join(dirName, '*.xls') ) :	
+		#opens excel workbook
+		wb = xlrd.open_workbook(fileName)
+		print "in workbook: %s" %fileName
+	
+		'''Opens all Track worksheets in a workbook'''
+		trackSheets = []
+		for sheet in wb.sheet_names():
+			if "Tracks" in sheet:
+				trackSheets.append(sheet)
 		
-		#Checks if it's an existing track
-		if trackList.trackExists(handle):
-			#Appends data to an existing track
-			trackList.allTracks[handle].addDate(date,count)
-		else: #creates a new Track
-			trackList.allTracks[handle] = Track(handle, path, count, date)
+		for shName in trackSheets:
+		
+			#opens Track Sheet
+			sh = wb.sheet_by_name(shName)
+			print "In Sheet: %s" %sh.name
+			rows = []
+			#Determines date of data based on name of sheet
+			date = dateutil.parser.parse(sh.name[:sh.name.find(' ')]) 
+			#print date
+	
+			#importer
+			'''Sheet Parser: Tracks
+			Track excel worksheets contain the date in their sheet name and a schema of
+			|PATH|COUNT|HANDLE
+			PATH is the path to the asset (including the actual track name, denoted by
+			the final carrot ">".)
+			COUNT is the number of downloads this week.
+			HANDLE is the unique ID of each track.'''
+			for rownum in range(1,sh.nrows):
+				cRow = sh.row_values(rownum)
+				path = sh.row_values(rownum)[0]
+				count = sh.row_values(rownum)[1]
+				handle = sh.row_values(rownum)[2]
+		
+				#Checks if it's an existing track
+				if trackList.trackExists(handle):
+					#Appends data to an existing track
+					trackList.allTracks[handle].addDate(date,count)
+				else: #creates a new Track
+					trackList.allTracks[handle] = Track(handle, path, count, date)
 			
 	
 	return
@@ -106,10 +132,11 @@ def importReport(fileName, trackList):
 
 
 
-testfile = 'testSet.xls'
+testfile = 'all/'
 trackList = TrackList()
 importReport(testfile,trackList)
 
+'''
 testString = "2011-07-18"
 testDate = dateutil.parser.parse(testString)
 print testString
@@ -117,3 +144,4 @@ print testDate
 
 print trackList.hasDate(testDate)
 
+'''
