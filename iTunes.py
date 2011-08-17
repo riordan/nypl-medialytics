@@ -112,7 +112,7 @@ def importReport(dirName, trackList):
 	for fileName in glob.glob( os.path.join(dirName, '*.xls') ) :
 		#opens excel workbook
 		wb = xlrd.open_workbook(fileName)
-		print "in workbook: %s" %fileName
+		#print "in workbook: %s" %fileName
 		'''Opens all Track worksheets in a workbook'''
 		trackSheets = []
 		summarySheets = []
@@ -140,7 +140,7 @@ def importReport(dirName, trackList):
 				
 				#opens current Sheet
 				sh = wb.sheet_by_name(shName)
-				print "In Sheet: %s" %sh.name
+				#print "In Sheet: %s" %sh.name
 				#Determines date of data based on name of sheet
 				date = dateutil.parser.parse(sh.name[:sh.name.find(' ')])
 				#print date
@@ -178,13 +178,26 @@ def importReport(dirName, trackList):
 
 
 
-targetDirectory = 'sampleFiles/'
+targetDirectory = 'fairFiles/'
 trackList = TrackList()
 importReport(targetDirectory,trackList)
+c = 0
+dc = 0
 for trackKey in trackList.allTracks.keys():
 	#So printing out tracks here has made me realize that there's at UTF/ASCII error in the names of the programs. Try to find a fix.
-	print trackList.allTracks[trackKey]
+	tr = trackList.allTracks[trackKey]
 
+#	Used to test for a certain set of programs
+	if "LIVE from the NYPL" in tr.path:
+		print "%s: %i" %(tr, tr.downloads())
+		dc += tr.downloads()
+		c += 1
+	#Everything has to print like this in order to handle UTF formatting. I'll see if there's a better way to do this...
+	#print "%s: %i" %(tr, tr.downloads())
+	
+print "Total count: %i" %c
+print "Total Tracks: %i" %dc
+print "Average: %d" %((dc+0.0)/c)
 '''
 testString = "2011-07-18"
 testDate = dateutil.parser.parse(testString)
