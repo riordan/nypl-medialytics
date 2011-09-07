@@ -179,7 +179,7 @@ def importReport(dirName, trackList):
 
 def exportTrackToExcel(filename, trackList):
 	wbk = xlwt.Workbook()
-	sheet = wbk.add_sheet('Track Totals')
+	sheet = wbk.add_sheet('Download Totals')
 	row = 0
 	col = 0
 	
@@ -203,8 +203,27 @@ def exportTrackToExcel(filename, trackList):
 	row += 1
 	
 	#Begin writing for tracks
-	#TBD!
-	
+	for trackKey in trackList.allTracks:
+		track = trackList.allTracks[trackKey]
+		sheet.write(row,col,track.name)
+		col += 1
+		sheet.write(row,col,track.path)
+		col += 1
+		sheet.write(row,col,track.handle)
+		col += 1
+		sheet.write(row,col,track.downloads())
+		col += 1
+		
+		#Needs to track downloads per day
+		for date in dateList:
+			#write function in Track to determine if a track has download data for a certain day
+			#write function in Track to determine how many downloads on that day if it has it
+			# write mirror function for previews
+			col += 1
+		
+		col = 0
+		row += 1
+		
 	print "About to save!"
 	wbk.save(filename)
 
