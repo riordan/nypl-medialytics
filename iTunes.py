@@ -50,6 +50,19 @@ class Track:
 			pvs += self.pvCount[day]
 	
 	
+	def hasDlDate(self,date):
+		for dkey in range(len(self.dlCount.keys())):
+			if date == self.dlCount.keys()[dkey]: return True
+		else: return False
+	
+	
+	def downloadsForDate(self,date):
+		return self.dlCount[date]
+	
+	def previewsForDate(self,date):
+		return self.pvCount[date]
+	
+	
 	def __str__(self):
 		return self.name
 
@@ -77,6 +90,7 @@ class TrackList:
 		self.allTracks[handle].addDlDate(date,dlCount)
 		if not date in self.allDates:
 			self.allDates.append(date)
+
 			
 	def addPvCount(self, handle, date, pvCount):
 		self.allTracks[handle].addPvDate(date,pvCount)
@@ -216,8 +230,8 @@ def exportTrackToExcel(filename, trackList):
 		
 		#Needs to track downloads per day
 		for date in dateList:
-			#write function in Track to determine if a track has download data for a certain day
-			#write function in Track to determine how many downloads on that day if it has it
+			if track.hasDlDate(date):
+				sheet.write(row,col,track.downloadsForDate(date))
 			# write mirror function for previews
 			col += 1
 		

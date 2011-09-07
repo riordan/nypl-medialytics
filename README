@@ -2,6 +2,22 @@ This is the draft code for managing NYPL media tracking. Right now it's barely i
 
 Required Modules (not base install)
 xlrd
+xlwt
+
+
+Installation:
+	Install required packages:
+		From commandline type "sudo easy_install xlrd, xlwt"
+		You may be prompted for your computer's password
+		
+	File Configuration:
+		Place all iTunes reports into a folder named "sampleFiles"
+		Place iTunes.py into folder one level ABOVE "sampleFiles"
+	
+
+How to use:
+	Once installed and configured, add all iTunes reports to folder, then from commandline type "python iTunes.py". Will output a file ituexport.xls with download data.
+
 
 ROADMAP
 
