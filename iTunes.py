@@ -1,4 +1,5 @@
 import xlrd
+import xlwt
 import sys
 import io
 import os
@@ -176,12 +177,46 @@ def importReport(dirName, trackList):
 	return
 
 
+def exportTrackToExcel(filename, trackList):
+	wbk = xlwt.Workbook()
+	sheet = wbk.add_sheet('Track Totals')
+	row = 0
+	col = 0
+	
+	#Needs to figure out earliest & latest dates in system to calculate number of columns
+	#SETUP
+	dateList = sorted(trackList.allDates)
+	sheet.write(row,col, 'Track Name')
+	col += 1
+	sheet.write(row,col, 'Path')
+	col += 1
+	sheet.write(row,col,'Handle')
+	col+=1
+	sheet.write(row,col, 'Total Count')
+	col += 1
+	
+	#Setup for date rows
+	for date in dateList:
+		sheet.write(row,col, 'Count %s' %date.isoformat())
+		col += 1
+	col = 0
+	row += 1
+	
+	#Begin writing for tracks
+	#TBD!
+	
+	print "About to save!"
+	wbk.save(filename)
 
 
-targetDirectory = 'fairFiles/'
+
+targetDirectory = 'sampleFiles/'
 trackList = TrackList()
 importReport(targetDirectory,trackList)
-c = 0
+
+exportTrackToExcel('ituexport.xls', trackList)
+
+'''c = 0
 dc = 0
 for trackKey in trackList.allTracks.keys():
 	#So printing out tracks here has made me realize that there's at UTF/ASCII error in the names of the programs. Try to find a fix.
@@ -198,6 +233,10 @@ for trackKey in trackList.allTracks.keys():
 print "Total count: %i" %c
 print "Total Tracks: %i" %dc
 print "Average: %d" %((dc+0.0)/c)
+'''
+
+
+
 '''
 testString = "2011-07-18"
 testDate = dateutil.parser.parse(testString)
