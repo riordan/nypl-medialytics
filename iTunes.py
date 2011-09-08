@@ -51,10 +51,16 @@ class Track:
 	
 	
 	def hasDlDate(self,date):
-		for dkey in range(len(self.dlCount.keys())):
-			if date == self.dlCount.keys()[dkey]: return True
-		else: return False
+		for datekey in range(len(self.dlCount.keys())):
+			if date == self.dlCount.keys()[datekey]: return True
+		return False
 	
+	
+	def hasPvDate(self,date):
+		for datekey in range(len(self.pvCount.keys())):
+			if date == self.pvCount.keys()[datekey]: return True
+		return False
+		
 	
 	def downloadsForDate(self,date):
 		return self.dlCount[date]
@@ -193,25 +199,26 @@ def importReport(dirName, trackList):
 
 def exportTrackToExcel(filename, trackList):
 	wbk = xlwt.Workbook()
-	sheet = wbk.add_sheet('Download Totals')
+	dateList = sorted(trackList.allDates)
+	#names workbook sheet based on most recent date recorded
+	dsheet = wbk.add_sheet('Download Totals -- %s' %dateList[-1].date().isoformat())
 	row = 0
 	col = 0
 	
 	#Needs to figure out earliest & latest dates in system to calculate number of columns
 	#SETUP
-	dateList = sorted(trackList.allDates)
-	sheet.write(row,col, 'Track Name')
+	dsheet.write(row,col, 'Track Name')
 	col += 1
-	sheet.write(row,col, 'Path')
+	dsheet.write(row,col, 'Path')
 	col += 1
-	sheet.write(row,col,'Handle')
+	dsheet.write(row,col,'Handle')
 	col+=1
-	sheet.write(row,col, 'Total Count')
+	dsheet.write(row,col, 'Total Download Count')
 	col += 1
 	
 	#Setup for date rows
 	for date in dateList:
-		sheet.write(row,col, 'Count %s' %date.isoformat())
+		dsheet.write(row,col, 'Count %s' %date.date().isoformat())
 		col += 1
 	col = 0
 	row += 1
@@ -219,27 +226,73 @@ def exportTrackToExcel(filename, trackList):
 	#Begin writing for tracks
 	for trackKey in trackList.allTracks:
 		track = trackList.allTracks[trackKey]
-		sheet.write(row,col,track.name)
+		dsheet.write(row,col,track.name)
 		col += 1
-		sheet.write(row,col,track.path)
+		dsheet.write(row,col,track.path)
 		col += 1
-		sheet.write(row,col,track.handle)
+		dsheet.write(row,col,track.handle)
 		col += 1
-		sheet.write(row,col,track.downloads())
+		dsheet.write(row,col,track.downloads())
 		col += 1
 		
 		#Needs to track downloads per day
 		for date in dateList:
 			if track.hasDlDate(date):
-				sheet.write(row,col,track.downloadsForDate(date))
-			# write mirror function for previews
+				dsheet.write(row,col,track.downloadsForDate(date))
+			
+			col += 1
+		
+		col = 0
+		row += 1
+		
+	#############Previews#########
+	#names workbook sheet based on most recent date
+	psheet = wbk.add_sheet('Preview Totals -- %s' %dateList[-1].date().isoformat())
+	row = 0
+	col = 0
+	
+	#Needs to figure out earliest & latest dates in system to calculate number of columns
+	#SETUP
+	psheet.write(row,col, 'Track Name')
+	col += 1
+	psheet.write(row,col, 'Path')
+	col += 1
+	psheet.write(row,col,'Handle')
+	col+=1
+	psheet.write(row,col, 'Total Preview Count')
+	col += 1
+	
+	#Setup for date rows
+	for date in dateList:
+		psheet.write(row,col, 'Count %s' %date.date().isoformat())
+		col += 1
+	col = 0
+	row += 1
+	
+	#Begin writing for tracks
+	for trackKey in trackList.allTracks:
+		track = trackList.allTracks[trackKey]
+		psheet.write(row,col,track.name)
+		col += 1
+		psheet.write(row,col,track.path)
+		col += 1
+		psheet.write(row,col,track.handle)
+		col += 1
+		psheet.write(row,col,track.downloads())
+		col += 1
+		
+		#Needs to track previews per day
+		for date in dateList:
+			if track.hasPvDate(date):
+				psheet.write(row,col,track.previewsForDate(date))
+			
 			col += 1
 		
 		col = 0
 		row += 1
 		
 	print "About to save!"
-	wbk.save(filename)
+	wbk.save('%s -- %s.xls'%(filename,dateList[-1].date().isoformat()))
 
 
 
@@ -247,7 +300,9 @@ targetDirectory = 'sampleFiles/'
 trackList = TrackList()
 importReport(targetDirectory,trackList)
 
-exportTrackToExcel('ituexport.xls', trackList)
+
+
+exportTrackToExcel('ituexport', trackList)
 
 '''c = 0
 dc = 0
