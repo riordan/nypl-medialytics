@@ -48,6 +48,7 @@ class Track:
 		pvs = 0
 		for day in self.pvCount.keys():
 			pvs += self.pvCount[day]
+		return pvs
 	
 	
 	def hasDlDate(self,date):
@@ -189,8 +190,10 @@ def importReport(dirName, trackList):
 					if cSheetType == "Tracks":
 						# Updates the count of downloads for that date
 						trackList.addDlCount(handle, date, count)
+						
 					elif cSheetType == "Previews":
 						trackList.addPvCount(handle, date, count)
+						
 					else:
 						print "Invalid sheet type!!!"
 						exit()
@@ -278,7 +281,7 @@ def exportTrackToExcel(filename, trackList):
 		col += 1
 		psheet.write(row,col,track.handle)
 		col += 1
-		psheet.write(row,col,track.downloads())
+		psheet.write(row,col,track.previews())
 		col += 1
 		
 		#Needs to track previews per day
@@ -299,8 +302,13 @@ def exportTrackToExcel(filename, trackList):
 targetDirectory = 'sampleFiles/'
 trackList = TrackList()
 importReport(targetDirectory,trackList)
-
-
+'''
+print "Debug Output:"
+print 'Downloads:'
+print trackList.allTracks[8378064387].downloads()
+print 'Previews:'
+print trackList.allTracks[8378064387].previews()
+'''
 
 exportTrackToExcel('ituexport', trackList)
 
